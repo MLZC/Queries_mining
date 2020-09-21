@@ -1,5 +1,7 @@
 data/*
+!data/README.md
 all_data_num.txt
 .idea
 .vscode
 __pycache__
+.DS_Store

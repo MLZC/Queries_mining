@@ -1,0 +1,5 @@
+gensim==0.13.2
+tensorflow==1.10.0
+Keras==1.1.0
+xgboost==0.81
+jieba==0.38

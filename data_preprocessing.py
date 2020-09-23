@@ -25,13 +25,13 @@ def to_csv(flag):
     test_set = "user_tag_query.10W.TEST"
     data_set_path = data_path + train_set
     data_loader = Loader(flag)
-    train_data = data_loader.data_loader(data_set_path)
+    train_data, n = data_loader.data_loader(data_set_path)
     ## This step is very important
     for lb in ['Education', 'Age', 'Gender']:
         train_data[lb] = train_data[lb] - 1
-        print(train_data.iloc[:1000][lb].value_counts())
+        print(train_data.iloc[:n][lb].value_counts())
     data_set_path = data_path + test_set
-    test_data = data_loader.data_loader(data_set_path, False)
+    test_data, _ = data_loader.data_loader(data_set_path, False)
     # Loader.count_values(train_data)
     '''2. tokenize data'''
     tfv = TfidfVectorizer(tokenizer=Tokenizer(len(train_data)), min_df=3, max_df=0.95, sublinear_tf=True)
@@ -206,7 +206,7 @@ class Loader(object):
                 data.append(row)
         df_data = pd.DataFrame(data)
         print("---" * 5 + " loading " + data_set_path + " completed" + "---" * 5)
-        return df_data
+        return df_data, i
 
 
 class Tokenizer(object):

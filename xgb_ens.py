@@ -46,7 +46,10 @@ def train(train_test_data_path, length):
         y = dic[lb][:TR]
         X_te = df.iloc[TR:]
         y_te = dic[lb][TR:]
-
+        print('{} train value_counts'.format(lb))
+        print(pd.value_counts(dic[lb][:length]))
+        print('{} test value_counts'.format(lb))
+        print(pd.value_counts(dic[lb][length:]))
         esr = 100
         evals = 1
         n_trees = 10

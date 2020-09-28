@@ -132,7 +132,7 @@ def tfidf_matrix_dump(X, var_name):
 
 def train_doc2vec(csv_path, length, model_type='dbow'):
     """
-    :param csv_path: path of train data with .csv format
+    :param csv_path: path of train and test data with .csv format
     :param model_type: 'dbow' or 'dm'
     :param length: the length of train data
     :return: dbow_d2v.model in ./data/

@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import xgboost as xgb
-from data_preprocessing import load_csv
+from data_separate import load_csv
 import conf.Education as Education
 import conf.Age as Age
 import conf.Gender as Gender
@@ -9,8 +9,6 @@ import conf.Gender as Gender
 import datetime
 
 data_path = './data/'
-csv_path = "./data/all_data.csv"
-length = 2000
 
 
 def xgb_acc_score(preds, dtrain):
@@ -26,14 +24,17 @@ def load_model_data():
     return df_lr, df_dm, df_dbow
 
 
-def train(length):
+def train(train_test_data_path, length):
+    """
+    length: length of train data
+    """
     df_lr, df_dm, df_dbow = load_model_data()
-    train_data, dic = load_csv(csv_path, length)
+    data, dic = load_csv(train_test_data_path)
     # seed = 10
 
-    TR = int(length / 2 * 0.9)
+    TR = length
     df_sub = pd.DataFrame()
-    df_sub['Id'] = train_data.iloc[TR:]['Id']
+    df_sub['Id'] = data.iloc[TR:]['Id']
     df = pd.concat([df_lr, df_dbow, df_dm], axis=1)
     print("----" * 5 + "Training xgb-ens start" + "----" * 5)
     print(df.columns)
@@ -63,5 +64,9 @@ def train(length):
     df_sub.to_csv(data_path + 'tfidf_dm_dbow_.csv', index=None, header=None, sep=' ')
     print("----" * 5 + "Training xgb-ens finished" + "----" * 5)
 
+
 if __name__ == '__main__':
-    train(length)
+    # csv_path = "./data/train_test_data.csv"
+    # length = 1600
+    # train(csv_path, length)
+    pass

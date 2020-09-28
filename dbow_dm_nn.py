@@ -7,28 +7,28 @@ from gensim.models import Doc2Vec
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation
 from keras.utils import np_utils
-from data_preprocessing import load_csv
+from data_separate import load_csv
 
 data_path = "./data/"
-csv_path = "./data/all_data.csv"
-length = 2000
+csv_path = "./data/train_test_data.csv"
 
 
 def train_dbow_dm_nn(feat: str, length: int):
     """
     :param feat: str ['dbow_d2v'.'dm_d2v']
+    :param length: length of train data
     :return: none
     """
     print(datetime.now(), 'training ' + feat + ' stack start!')
-    train_data, dic = load_csv(csv_path, length)
+    train_data, dic = load_csv(csv_path)
     model = Doc2Vec.load(data_path + feat + '.model')
-    doc_vec = np.array([model.docvecs[i] for i in range(int(length / 2))])
+    doc_vec = np.array([model.docvecs[i] for i in range(len(train_data))])
     df_stack = pd.DataFrame(index=range(len(train_data)))
-    TR = int(length / 2 * 0.9)
+    TR = length
     n = 5
     X_tr = doc_vec[:TR]
     X_te = doc_vec[TR:]
-    for i, lb in enumerate(['Education', 'Age', 'Gender']):
+    for _, lb in enumerate(['Education', 'Age', 'Gender']):
         num_class = len(pd.value_counts(dic[lb]))
         y_tr = dic[lb][:TR]
         y_te = dic[lb][TR:]
@@ -60,9 +60,9 @@ def train_dbow_dm_nn(feat: str, length: int):
                           optimizer='adadelta',
                           metrics=['accuracy'])
 
-            history = model.fit(X_train, Y_train, shuffle=True,
-                                batch_size=128, nb_epoch=35,
-                                verbose=2, validation_data=(X_test, Y_test))
+            model.fit(X_train, Y_train, shuffle=True,
+                      batch_size=128, nb_epoch=35,
+                      verbose=2, validation_data=(X_test, Y_test))
             y_pred_va = model.predict_proba(X_tr[va])
             y_pred_te = model.predict_proba(X_te)
             print('va acc:', myAcc(y_tr[va], y_pred_va))
@@ -78,5 +78,6 @@ def train_dbow_dm_nn(feat: str, length: int):
 
 
 if __name__ == '__main__':
-    train_dbow_dm_nn('dbow_d2v', length)
-    train_dbow_dm_nn('dm_d2v', length)
+    # train_dbow_dm_nn('dbow_d2v', 1600)
+    # train_dbow_dm_nn('dm_d2v', 1600)
+    pass

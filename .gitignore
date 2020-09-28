@@ -5,3 +5,5 @@ all_data_num.txt
 .vscode
 __pycache__
 .DS_Store
+test.txt
+.ipynb_checkpoints

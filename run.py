@@ -8,7 +8,7 @@ import sys
 
 if __name__ == '__main__':
     start = datetime.datetime.now()
-    flag = sys.argv[1]
+    flag = int(sys.argv[1])
     if flag:
         print("Run on the mini dataset")
     else:

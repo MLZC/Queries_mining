@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import pickle
 from sklearn.linear_model import LogisticRegression
-from sklearn.cross_validation import KFold
+from sklearn.model_selection import KFold
 from datetime import datetime
 from data_separate import load_csv
 from myAcc import myAcc
@@ -40,12 +40,12 @@ def train_tfidf_stack(csv_path, length):
 
         stack = np.zeros((X_tr.shape[0], num_class))
         stack_te = np.zeros((X_te.shape[0], num_class))
-
-        for j, (tr, va) in enumerate(KFold(len(y_tr), n_folds=n)):
+        kf = KFold(n_splits=n)
+        for j, (tr, va) in enumerate(kf.split(X_tr,y_tr)):
             print('%s stack:%d/%d' % (str(datetime.now()), j + 1, n))
             # print(train_test_data.iloc[tr][i].value_counts())
             # print(train_test_data.iloc[va][i].value_counts())
-            clf = LogisticRegression(C=3)
+            clf = LogisticRegression(C=3, solver='liblinear', dual=True, max_iter=1000)
             clf.fit(X_tr[tr], y_tr[tr])
             y_pred_va = clf.predict_proba(X_tr[va])
             y_pred_te = clf.predict_proba(X_te)

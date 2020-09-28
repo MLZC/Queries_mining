@@ -2,7 +2,7 @@ from myAcc import myAcc
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from sklearn.cross_validation import KFold
+from sklearn.model_selection import KFold
 from gensim.models import Doc2Vec
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation
@@ -35,8 +35,8 @@ def train_dbow_dm_nn(feat: str, length: int):
 
         stack = np.zeros((X_tr.shape[0], num_class))
         stack_te = np.zeros((X_te.shape[0], num_class))
-
-        for k, (tr, va) in enumerate(KFold(len(y_tr), n_folds=n)):
+        kf = KFold(n_splits=n)
+        for k, (tr, va) in enumerate(kf.split(X_tr,y_tr)):
             print('{} stack:{}/{} {}'.format(datetime.now(), k + 1, n, lb))
             nb_classes = num_class
             X_train = X_tr[tr]
@@ -61,10 +61,10 @@ def train_dbow_dm_nn(feat: str, length: int):
                           metrics=['accuracy'])
 
             model.fit(X_train, Y_train, shuffle=True,
-                      batch_size=128, nb_epoch=35,
+                      batch_size=128, epochs=35,
                       verbose=2, validation_data=(X_test, Y_test))
-            y_pred_va = model.predict_proba(X_tr[va])
-            y_pred_te = model.predict_proba(X_te)
+            y_pred_va = model.predict(X_tr[va])
+            y_pred_te = model.predict(X_te)
             print('va acc:', myAcc(y_tr[va], y_pred_va))
             print('te acc:', myAcc(y_te, y_pred_te))
             stack[va] += y_pred_va
@@ -78,6 +78,6 @@ def train_dbow_dm_nn(feat: str, length: int):
 
 
 if __name__ == '__main__':
-    # train_dbow_dm_nn('dbow_d2v', 1600)
-    # train_dbow_dm_nn('dm_d2v', 1600)
-    pass
+    train_dbow_dm_nn('dbow_d2v', 1600)
+    train_dbow_dm_nn('dm_d2v', 1600)
+    # pass

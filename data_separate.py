@@ -111,17 +111,17 @@ class Loader(object):
                 else:
                     row['Query'] = '\t'.join(segs[1:])
                 data.append(row)
-        df_data = pd.DataFrame(data)
+        df_data = pd.DataFrame(data)[['Age','Education','Gender','Id','Query']]
         print("---" * 5 + " loading " + data_set_path + " completed" + "---" * 5)
         return df_data, i
 
 
 if __name__ == "__main__":
-    # start = datetime.now()
-    # print("Start loading data and save as csv!")
-    # csv_path = origin_to_csv(1)  # 1- mini batch(2000), 0-whole set(10w)
-    # data, _ = load_csv(csv_path)
-    # _, _ = separate_data(data)
-    # end = datetime.now()
-    # print("Save done! Duration time: {}s ".format((end - start).seconds))
-    pass
+    start = datetime.now()
+    print("Start loading data and save as csv!")
+    csv_path = origin_to_csv(1)  # 1- mini batch(2000), 0-whole set(10w)
+    data, _ = load_csv(csv_path)
+    _, _ = separate_data(data)
+    end = datetime.now()
+    print("Save done! Duration time: {}s ".format((end - start).seconds))
+    # pass

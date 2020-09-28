@@ -39,8 +39,9 @@ def train(train_test_data_path, length):
     print("----" * 5 + "Training xgb-ens start" + "----" * 5)
     print(df.columns)
     for lb in ['Education', 'Age', 'Gender']:
+    # for lb in ['Gender']:
         print("-----" * 5 + lb + "-----" * 5)
-        num_class = len(pd.value_counts(dic[lb]))
+        num_class = len(pd.value_counts(dic[lb][:length]))
         X = df.iloc[:TR]
         y = dic[lb][:TR]
         X_te = df.iloc[TR:]
@@ -53,7 +54,6 @@ def train(train_test_data_path, length):
         lb_2_model = eval(lb)
         params = lb_2_model.params
         params['num_class'] = num_class
-
         dtrain = xgb.DMatrix(X, y)
         dvalid = xgb.DMatrix(X_te, y_te)
         watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
@@ -66,7 +66,7 @@ def train(train_test_data_path, length):
 
 
 if __name__ == '__main__':
-    # csv_path = "./data/train_test_data.csv"
-    # length = 1600
-    # train(csv_path, length)
-    pass
+    csv_path = "./data/train_test_data.csv"
+    length = 1600
+    train(csv_path, length)
+    # pass

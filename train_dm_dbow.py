@@ -137,12 +137,12 @@ def train_doc2vec(csv_path, length, model_type='dbow'):
     :param length: the length of train data
     :return: dbow_d2v.model in ./data/
     """
-    d2v = Doc2Vec(dm=0, size=300, negative=5, hs=0, min_count=3, window=30, sample=1e-5, workers=8, alpha=0.025,
+    d2v = Doc2Vec(dm=0, vector_size=300, negative=5, hs=0, min_count=3, window=30, sample=1e-5, workers=8, alpha=0.025,
                   min_alpha=0.025)
     epoch = 2
     if model_type == 'dm':
         epoch = 10
-        d2v = Doc2Vec(dm=1, size=300, negative=5, hs=0, min_count=3, window=10, sample=1e-5, workers=8, alpha=0.05,
+        d2v = Doc2Vec(dm=1, vector_size=300, negative=5, hs=0, min_count=3, window=10, sample=1e-5, workers=8, alpha=0.05,
                       min_alpha=0.025)
     doc_list = DocList(csv_path[:-4] + '_num.txt')
     d2v.build_vocab(doc_list)
@@ -151,10 +151,11 @@ def train_doc2vec(csv_path, length, model_type='dbow'):
     for i in range(epoch):
         print(datetime.now(), 'pass: {}/{}'.format(i + 1, epoch))
         doc_list = DocList(csv_path[:-4] + '_num.txt')
-        d2v.train(doc_list)
+        d2v.train(doc_list,total_examples=d2v.corpus_count, epochs=d2v.epochs)
         X_d2v = np.array([d2v.docvecs[i] for i in range(length)])
         for j in ["Education", 'Age', 'Gender']:
-            scores = cross_val_score(LogisticRegression(C=3), X_d2v, dic[j][:length], cv=5)
+            clf = LogisticRegression(C=3, solver='liblinear', dual=True, max_iter=1000)
+            scores = cross_val_score(clf, X_d2v, dic[j][:length], cv=5)
             print(model_type, j, scores, np.mean(scores))
     d2v.save(data_path + model_type + '_d2v.model')
     print(datetime.now(), model_type + ' model save done!')
@@ -192,23 +193,23 @@ class DocList(object):
 
 
 if __name__ == "__main__":
-    # train_data_path = './data/train_data.csv'
-    # test_data_path = './data/test_data.csv'
-    # start = datetime.now()
-    # print("Start training dm and dbow model!")
-    # add_number_to_query(train_data_path)
-    # train_data, _ = load_csv(train_data_path)
-    # X_train = tokenize_data(train_data)
-    # tfidf_matrix_dump(X_train, 'tfidf_train.pkl')
-    #
-    # new_train_data_path = fill_train_data(train_data, X_train)
-    # length, train_test_data_path, train_test_data = concat_train_test(new_train_data_path, test_data_path)
-    # add_number_to_query(train_test_data_path)
-    # X_train_test = tokenize_data(train_test_data)
-    # tfidf_matrix_dump(X_train_test, 'tfidf_train_test.pkl')
-    #
-    # train_doc2vec(train_test_data_path, length, 'dbow')
-    # train_doc2vec(train_test_data_path, length, 'dm')
-    # end = datetime.now()
-    # print("Train dm and dbow model down! Duration time: {}s ".format((end - start).seconds))
-    pass
+    train_data_path = './data/train_data.csv'
+    test_data_path = './data/test_data.csv'
+    start = datetime.now()
+    print("Start training dm and dbow model!")
+    add_number_to_query(train_data_path)
+    train_data, _ = load_csv(train_data_path)
+    X_train = tokenize_data(train_data)
+    tfidf_matrix_dump(X_train, 'tfidf_train.pkl')
+    
+    new_train_data_path = fill_train_data(train_data, X_train)
+    length, train_test_data_path, train_test_data = concat_train_test(new_train_data_path, test_data_path)
+    add_number_to_query(train_test_data_path)
+    X_train_test = tokenize_data(train_test_data)
+    tfidf_matrix_dump(X_train_test, 'tfidf_train_test.pkl')
+    
+    train_doc2vec(train_test_data_path, length, 'dbow')
+    train_doc2vec(train_test_data_path, length, 'dm')
+    end = datetime.now()
+    print("Train dm and dbow model down! Duration time: {}s ".format((end - start).seconds))
+    # pass

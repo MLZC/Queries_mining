@@ -8,6 +8,7 @@ from collections import namedtuple
 from gensim.models import Doc2Vec
 from datetime import datetime
 from sklearn.model_selection import cross_val_score
+from sklearn import preprocessing
 import pickle
 from data_separate import load_csv
 
@@ -86,7 +87,8 @@ def fill_missing_value(category: str, idx: int, train_data, X):
     c = 1
     if idx != 1:
         c = 2
-    train_data.iloc[missing_data_idx, idx] = LogisticRegression(C=c).fit(X[normal_data_idx],
+    clf = LogisticRegression(C=3, solver='liblinear', dual=True, max_iter=1000)
+    train_data.iloc[missing_data_idx, idx] = clf.fit(X[normal_data_idx],
                                                                          train_data.iloc[normal_data_idx, idx]).predict(
         X[missing_data_idx])
     return normal_data_idx, missing_data_idx
@@ -113,11 +115,13 @@ def tokenize_data(train_data):
     tfv = TfidfVectorizer(tokenizer=Tokenizer(len(train_data)), min_df=3, max_df=0.95, sublinear_tf=True)
     print("------" * 5 + "   Tokenize Query   " + "------" * 5)
     X = tfv.fit_transform(train_data['Query'])
+    max_abs_scaler = preprocessing.MaxAbsScaler()
+    X_maxabs = max_abs_scaler.fit_transform(X)
     print("------" * 5 + " Tokenize  Finished " + "------" * 5)
     print("Vocabulary length: ", len(tfv.vocabulary_))
     # X: Tf-idf-weighted document-term matrix. [n_samples, n_features]
     print("The shape of Tf-idf-weighted document-term matrix:", X.shape)
-    return X
+    return X_maxabs
 
 
 def tfidf_matrix_dump(X, var_name):

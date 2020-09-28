@@ -1,7 +1,12 @@
+# To-do
+
+- [x] data standardization
+
+---
 # Environment preparetion
 
-1. Create python3.5 environment and corresponding anaconda
-    > conda create -n python35 python=3.5 anaconda
+1. Create virtual environment
+    > conda create -n queries_mining
 <!-- 2. install conda dependencies
     > conda install --yes --file requirements_conda.txt -->
 2. For **PowerShell** user:
@@ -10,7 +15,7 @@
         conda init powershell
         ```
     Repon powershell and activate our environment.
-    > conda activate python35
+    > conda activate queries_mining
     
     **For cmd user: Go to step 3 directly.**
 3. install pip dependencies

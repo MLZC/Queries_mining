@@ -1,5 +1,8 @@
-gensim==0.13.2
-tensorflow==1.10.0
-Keras==1.1.0
-xgboost==0.81
-jieba==0.38
+gensim==3.8.3
+jieba==0.42.1
+xgboost==1.2.0
+scikit_learn==0.23.2
+Keras==2.4.3
+numpy==1.18.5
+pandas==1.1.1
+tensorflow==1.14.0

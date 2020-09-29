@@ -36,7 +36,18 @@
 # Run project
 
 Go to the root director of the project
-> python run.py
+
+Run on the mini set
+> python run.py 1 > 2k.txt
+
+Run on the whole set:
+> python run.py 0 > 10w.txt
+
+# keras and tensorflow version
+
+If keras==2.4.3 is not compatible with tensorflow==1.14.0, then try keras==2.0.8.
+
+> pip install keras==2.0.8
 
 **Note:**
 

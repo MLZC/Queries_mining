@@ -66,7 +66,7 @@ def separate_data(all_data):
     train_data.to_csv(train_data_path, index=None, encoding='utf8')
     print("train_data:{}, save at {} ".format(train_data.shape, train_data_path))
     print("Separate data to train and test: done!")
-    return train_data_path, test_data_path, train_data[0]
+    return train_data_path, test_data_path, train_data.shape[0]
 
 
 def load_csv(csv_path):

@@ -14,9 +14,9 @@ if __name__ == '__main__':
     else:
         print("Run on the whole set")
     # 1. data separating
-    train_data_path, test_data_path = data_separate.separate(flag)  # 1 mini batch,0 whole set
+    train_data_path, test_data_path, length = data_separate.separate(flag)  # 1 mini batch,0 whole set
     # 2. train dm dbow and fill NA data in train_data
-    length, train_test_data_path = train_dm_dbow.train(train_data_path, test_data_path)
+    _, train_test_data_path = train_dm_dbow.train(train_data_path, test_data_path)
     # 3. tf-idf slcaking
     tf_idf_stack.train_tfidf_stack(train_test_data_path, length)
     # 4. train dbow dm nn

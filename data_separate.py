@@ -14,10 +14,10 @@ def separate(flag):
     print(start, "Start loading data and save as csv!")
     origin_data_path = origin_to_csv(flag)  # 1- mini batch(2000), 0-whole set(10w)
     origin_data, _ = load_csv(origin_data_path)
-    train_data_path, test_data_path = separate_data(origin_data)
+    train_data_path, test_data_path, length = separate_data(origin_data)
     end = datetime.now()
     print(end, "Save done! Duration time: {}s ".format((end - start).seconds))
-    return train_data_path, test_data_path
+    return train_data_path, test_data_path, length
 
 
 def origin_to_csv(flag):
@@ -43,7 +43,7 @@ def origin_to_csv(flag):
 def separate_data(all_data):
     """
     :param all_data: dataFrame
-    return: train_data_path, test_data_path
+    return: train_data_path, test_data_path, length of train data
     """
     print("Separate data to train and test: start!")
     all_normal_data_idx = \
@@ -64,9 +64,9 @@ def separate_data(all_data):
     print("test_data:{}, save at {} ".format(test_data.shape, test_data_path))
     train_data_path = data_path + 'train_data.csv'
     train_data.to_csv(train_data_path, index=None, encoding='utf8')
-    print("test_data:{}, save at {} ".format(train_data.shape, train_data_path))
+    print("train_data:{}, save at {} ".format(train_data.shape, train_data_path))
     print("Separate data to train and test: done!")
-    return train_data_path, test_data_path
+    return train_data_path, test_data_path, train_data[0]
 
 
 def load_csv(csv_path):
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     print("Start loading data and save as csv!")
     csv_path = origin_to_csv(1)  # 1- mini batch(2000), 0-whole set(10w)
     data, _ = load_csv(csv_path)
-    _, _ = separate_data(data)
+    _, _, _ = separate_data(data)
     end = datetime.now()
     print("Save done! Duration time: {}s ".format((end - start).seconds))
     # pass

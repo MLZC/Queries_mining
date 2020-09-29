@@ -87,7 +87,7 @@ def fill_missing_value(category: str, idx: int, train_data, X):
     c = 1
     if idx != 1:
         c = 2
-    clf = LogisticRegression(C=3, solver='liblinear', dual=True, max_iter=1000)
+    clf = LogisticRegression(C=c, solver='liblinear', dual=True, max_iter=1000)
     train_data.iloc[missing_data_idx, idx] = clf.fit(X[normal_data_idx],
                                                                          train_data.iloc[normal_data_idx, idx]).predict(
         X[missing_data_idx])

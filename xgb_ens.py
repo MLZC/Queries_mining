@@ -5,11 +5,11 @@ from data_separate import load_csv
 import conf.Education as Education
 import conf.Age as Age
 import conf.Gender as Gender
-
+from myAcc import ensAcc
 import datetime
 
 data_path = './data/'
-
+test_set_path = './data/test_data.csv'
 
 def xgb_acc_score(preds, dtrain):
     y_true = dtrain.get_label()
@@ -62,11 +62,13 @@ def train(train_test_data_path, length):
         watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
         bst = xgb.train(params, dtrain, n_trees, evals=watchlist, feval=xgb_acc_score, maximize=True,
                         early_stopping_rounds=esr, verbose_eval=evals)
-        df_sub[lb] = np.argmax(bst.predict(dvalid), axis=1) + 1
+        df_sub[lb] = np.argmax(bst.predict(dvalid), axis=1)
     df_sub = df_sub[['Age', 'Education', 'Gender', 'Id']]
-    df_sub.to_csv(data_path + 'tfidf_dm_dbow_.csv', index=None, header=None, sep=' ')
+    df_sub.columns = ['Age', 'Education', 'Gender', 'Id']
+    results_path = data_path + 'tfidf_dm_dbow_.csv'
+    df_sub.to_csv(results_path, index=None, encoding='utf8')
+    ensAcc(results_path, test_set_path)
     print("----" * 5 + "Training xgb-ens finished" + "----" * 5)
-
 
 if __name__ == '__main__':
     csv_path = "./data/train_test_data.csv"

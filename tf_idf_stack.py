@@ -45,7 +45,7 @@ def train_tfidf_stack(csv_path, length):
             print('%s stack:%d/%d' % (str(datetime.now()), j + 1, n))
             # print(train_test_data.iloc[tr][i].value_counts())
             # print(train_test_data.iloc[va][i].value_counts())
-            clf = LogisticRegression(C=3, solver='liblinear', dual=True, max_iter=1000)
+            clf = LogisticRegression(C=3, solver='liblinear', dual=True, max_iter=10000)
             clf.fit(X_tr[tr], y_tr[tr])
             y_pred_va = clf.predict_proba(X_tr[va])
             y_pred_te = clf.predict_proba(X_te)

@@ -53,8 +53,8 @@ def separate_data(all_data):
     temp = np.setdiff1d(np.arange(len(all_data)), all_normal_data_idx, assume_unique=True)
     # if a data miss these three value at same time, then it's a non-value data
     normal_data_idx = np.setdiff1d(temp, all_na_value_idx, assume_unique=True)
-    # 80% train 20% test
-    t = int(len(all_normal_data_idx) - len(all_data) * 0.2)
+    # 90% train 10% test
+    t = int(len(all_normal_data_idx) - len(all_data) * 0.1)
     test_data_idx = all_normal_data_idx[t:]
     train_data_idx = np.sort(np.hstack((normal_data_idx, all_normal_data_idx[:t])))
     test_data = all_data.iloc[test_data_idx]

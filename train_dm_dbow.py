@@ -87,7 +87,7 @@ def fill_missing_value(category: str, idx: int, train_data, X):
     c = 1
     if idx != 1:
         c = 2
-    clf = LogisticRegression(C=c, solver='liblinear', dual=True, max_iter=1000)
+    clf = LogisticRegression(C=c, solver='liblinear', dual=True, max_iter=10000)
     train_data.iloc[missing_data_idx, idx] = clf.fit(X[normal_data_idx],
                                                                          train_data.iloc[normal_data_idx, idx]).predict(
         X[missing_data_idx])
@@ -145,8 +145,8 @@ def train_doc2vec(csv_path, length, model_type='dbow'):
                   min_alpha=0.025)
     epoch = 2
     if model_type == 'dm':
-        epoch = 10
-        d2v = Doc2Vec(dm=1, vector_size=300, negative=5, hs=0, min_count=3, window=10, sample=1e-5, workers=8, alpha=0.05,
+        epoch = 3
+        d2v = Doc2Vec(dm=1, vector_size=300, negative=5, hs=0, min_count=3, window=10, sample=1e-5, workers=8, alpha=0.025,
                       min_alpha=0.025)
     doc_list = DocList(csv_path[:-4] + '_num.txt')
     d2v.build_vocab(doc_list)
@@ -158,7 +158,7 @@ def train_doc2vec(csv_path, length, model_type='dbow'):
         d2v.train(doc_list,total_examples=d2v.corpus_count, epochs=d2v.epochs)
         X_d2v = np.array([d2v.docvecs[i] for i in range(length)])
         for j in ["Education", 'Age', 'Gender']:
-            clf = LogisticRegression(C=3, solver='liblinear', dual=True, max_iter=1000)
+            clf = LogisticRegression(C=3, solver='saga', dual=False, max_iter=10000)
             scores = cross_val_score(clf, X_d2v, dic[j][:length], cv=5)
             print(model_type, j, scores, np.mean(scores))
     d2v.save(data_path + model_type + '_d2v.model')
